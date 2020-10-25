@@ -4,22 +4,52 @@
 // Comentario general sobre la solución,
 // explicando cómo se resuelve el problema
 
+/*
+En este problema hay que comprobar dos cuestiones:
+-Sea aciclico-> para ello se verá que no tiene mas de V-1 aristas
+-Sea conexo-> se aplicara dfs para comprobar q el numero de de vertices del grafo corresponde con el numero de nodos recorridos.
+*/
+
 #include <iostream>
 #include <fstream>
 #include <vector>
 
 #include "Grafo.h"  // propios o los de las estructuras de datos de clase
 
-
-
 using namespace std;
+
 // función que resuelve el problema
-// comentario sobre el coste, O(f(N)), donde N es ...
-bool resolver(const Grafo & g) {
-    vector<bool> visitados(g.V(), false);
-    int totalVisitados = 0;
-    return dfs(g,0,)
-}
+// comentario sobre el coste, O(V + A), recorrido dfs
+
+class ArbolLibreDFS {
+private:
+    vector<bool> visitados;
+    bool conexo;
+    void dfs(const Grafo& g, int v, int & totalVisitados) {
+        visitados[v] = true;
+        totalVisitados++;
+        for (int w : g.ady(v)) {
+            if (!visitados[w]) {
+                dfs(g, w, totalVisitados);
+            }
+        }
+    }
+public:
+    ArbolLibreDFS(const Grafo& g) : visitados(g.V(), false), conexo(false) {
+        int totalVisitados = 0;
+        dfs(g, 0, totalVisitados);
+        if (totalVisitados == g.V()) {
+            conexo = true;
+        }
+    }
+
+    bool esAciclico(const Grafo& g, int a) {
+        return g.V() - 1 == a;
+    }
+    bool esLibre(const Grafo& g, int a) {
+        return conexo && esAciclico(g, a);
+    }
+};
 
 // resuelve un caso de prueba, leyendo de la entrada la
 // configuración, y escribiendo la respuesta
@@ -38,7 +68,9 @@ bool resuelveCaso() {
         cin >> v1 >> v2;
         g.ponArista(v1, v2);
     }
-    Solucion sol = resolver(datos);
+    ArbolLibreDFS sol(g);
+    (sol.esLibre(g,a)) ? cout << "SI" : cout << "NO";
+    cout << '\n';
 
     // escribir sol
 
