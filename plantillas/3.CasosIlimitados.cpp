@@ -9,7 +9,7 @@
 #include <...>
 
 #include "..."  // propios o los de las estructuras de datos de clase
-
+using namespace std;
 // función que resuelve el problema
 // comentario sobre el coste, O(f(N)), donde N es ...
 Solucion resolver(Datos datos) {
