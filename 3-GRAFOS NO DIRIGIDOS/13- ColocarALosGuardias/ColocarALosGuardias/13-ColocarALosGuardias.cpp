@@ -19,9 +19,9 @@ class ColocarGuardias {
 private:
     vector<bool> visitados;
     vector<bool> coloresGuardias;
-    int minimoBlancos;
-    int minimoNegros;
-    int min;
+    int guardias;
+    int blanco;
+    int negro;
     bool posible;
 
     bool dfs(const Grafo& g, int v) {
@@ -30,15 +30,12 @@ private:
             if (!visitados[w]) {
                 coloresGuardias[w] = !coloresGuardias[v];
                 if (coloresGuardias[w]) {
-                    minimoNegros++;
+                    blanco++;
                 }
                 else {
-                    minimoBlancos++;
+                   negro++;
                 }
-                
-                if (!dfs(g, w)) {
-                    return false;
-                }
+                if (!dfs(g, w)) return false;
             }
             else{
                 if (coloresGuardias[w] == coloresGuardias[v]) {
@@ -53,19 +50,18 @@ private:
     //color blanco 0 (guardia blanco)
     //color negro 1 (guardia negro)
 public:
-    ColocarGuardias(Grafo const& g): visitados(g.V(),false),coloresGuardias(g.V(), false),min(0),posible(false), minimoBlancos(0), minimoNegros(0){
-       for (int v = 0; v < g.V(); ++v) {
-            if (!visitados[v]) { 
-                coloresGuardias[v] = true;
-                minimoNegros++;
-                posible = dfs(g, v);
-                min = std:: min(minimoBlancos, minimoNegros);
+    ColocarGuardias(Grafo const& g) : visitados(g.V(), false), coloresGuardias(g.V()),guardias(0), negro(1),blanco(0), posible(true) {
+       for (int v = 0; v < g.V() && posible; ++v) {
+           if (!visitados[v]) {
+               posible = dfs(g, v);
+               guardias += std::min(blanco, negro);
+               negro = 1; blanco = 0;
             }
         }
     }
 
     int minimo(){
-        return min;
+        return guardias;
     }
 
     bool esPosible(){
@@ -98,8 +94,7 @@ bool resuelveCaso() {
     ColocarGuardias cg(guardias);
 
     // escribir sol
-    if (calles == cruces) cout << "IMPOSIBLE";
-    else cg.esPosible() ? cout << cg.minimo() : cout << "IMPOSIBLE";
+     cg.esPosible() ? cout << cg.minimo() : cout << "IMPOSIBLE";
 
     cout << "\n";
     return true;
